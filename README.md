@@ -1,7 +1,38 @@
 # ShadeBot
-![Shadebot logo](https://alipoodle.me/i/96NdQ.png)
+<img src="https://alipoodle.me/i/96NdQ.png" align="right" height="250" width="250" />
 
 ShadeBot is a discord bot primarily made for the Hentai! server Discord! It's function is to welcome people using a special welcome room. When users join the server, they can only see #announcements #rules and #go-here-for-user-rank and they need to have a profile picture &  type a specific password. In our case it's simply **Hi**. They will then be welcomed in the primary chat room.
+
+# Installation
+
+### - Install Required Programs -
+
+Before you can download and setup the bot, there are 2 programs you need to have installed on your computer to make sure everything runs on first go:
+
+- [**Git**](https://git-scm.com/downloads)
+- [**Node JS**](https://nodejs.org/en/download/current/)
+
+### - Download Project Files -
+
+After you have the required programs installed, you can go ahead and download the project files. To do that, you either download the ZIP folder or do `git clone https://github.com/ShadeBot/ShadeBot-Discord-Bot.git` if you are a console person. Once you finish downloading it you will be ready to setup the config files.
+
+### - Setup Config Files -
+
+Once you download the project files you will see the `configbot.json` you'll need to fill it with how you would like ShadeBot to work.
+As well as the config file, there's the jsonStorage which will contain a few files which can be edited of it's content. However all of them can be edited from within Discord.
+
+#### < Windows >
+
+Open the `installer.bat` file. This will install the required node modules (so you dont have to do it yourself) and create a `run.bat` file. You can use this file to start the bot. If you did everything correctly, the bot should start up fine.
+
+If for some reason you have ran `installer.bat`, it disapeared and it didnt create `run.bat`, then re-download `installer.bat` and try again. Most likely either git or node were not installed correctly. Check if they work and try again.
+
+
+#### < Linux / Mac >
+
+Executable files are kind of weird in linux, and users most likely use console to do their work, so to setup this selfbot on linux or mac open a terminal in the directory you downloaded the files to and type `npm i`. Once it is finished you can start the selfbot by using `npm start` or `node self.js`. If you did everything correctly, the bot should start up fine.
+
+### - Feautres -
 
 Shadebot has a small Gambling system in it. Each day a user can come in and do ``#daily`` and can get **100 Shadebucks** which can be used towards roulette and a luckydip game which can let them gain more Shadebucks!
 

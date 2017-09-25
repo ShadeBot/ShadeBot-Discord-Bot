@@ -1,0 +1,27 @@
+{
+  "name": "ShadeBot-Discord-Bot",
+  "version": "2.2.0",
+  "description": "A server bot made by Alipoodle. For welcoming users ",
+  "keywords": ["discord", "shade", "bot"],
+  "license": "MIT",
+  "main": "serverbot.js",
+  "author": "Alipoodle",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ShadeBot/ShadeBot-Discord-Bot"
+  },
+  "scripts": {
+    "start": "node serverbot.js"
+  },
+  "bugs": {
+    "url": "https://github.com/ShadeBot/ShadeBot-Discord-Bot/issues"
+  },
+  "engines": {
+    "node": ">=6.0.0"
+  },
+  "dependencies": {
+    "chalk": "^2.0.1",
+    "discord.js": "^11.1.0"
+  },
+  "devDependencies": {}
+}

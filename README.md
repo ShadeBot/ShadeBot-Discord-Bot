@@ -34,29 +34,36 @@ Executable files are kind of weird in linux, and users most likely use console t
 
 ### - Feautres -
 
+#### Daily
 Shadebot has a small Gambling system in it. Each day a user can come in and do ``#daily`` and can get **100 Shadebucks** which can be used towards roulette and a luckydip game which can let them gain more Shadebucks!
 
 ![Example of #daily](https://alipoodle.me/i/DRSuJ.png)
 
+#### Events team points
 The bot  handles our events team points, allowing users to cash out for items such as Steam Credit, or Custom Roles / Commands.
 
 ![Event team stuff](https://alipoodle.me/i/LhIC2.png)
 
+#### Self assign Roles
 As on many servers you have a few roles which users can "self assign". With Shadebot, there's a specific room which users can ask for a role and be provided with them.
 
 ![Roles](https://alipoodle.me/i/EzlLX.png)
 
+#### Ban SA roles
 "But I only want specific people, who have X role to gain this role", ShadeBot can do that!
 
 ![Roles2](https://alipoodle.me/i/r8V2H.png)
 
+#### Muting system
 Shadebot has a muting system that will add a specific role to a user to mute them and then will remove it at specific time. (Work in progress)
 
 ![Mute](https://alipoodle.me/i/PoFad.png)
 
+#### Removal of Discord Links
 Don't want stupid Discord links
 
 ![Discord Links](https://alipoodle.me/i/AjDof.png)
 
-There's a few other things that Shadebot can do.
-**Currently Shadebot is made more for the Hentai server, however in the future a config file will be made to make it more open source for other servers to use!**
+There's a many other things that Shadebot can do!
+
+**Currently Shadebot is made more for the [Hentai server](https://discord.gg/0rJcIjZ54vYONbfJ). However has a config file to be able to change how it works!**

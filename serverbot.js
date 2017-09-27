@@ -17,6 +17,8 @@ var nsfw = JSON.parse(fs.readFileSync("./jsonStorage/nsfw.json", "utf8"));
 const tableFlip = ["(╯°□°)╯︵ ┻━┻", "(ノ ゜Д゜)ノ ︵ ┻━┻ ", "‎(ﾉಥ益ಥ）ﾉ﻿ ┻━┻", "(ノ^_^)ノ┻━┻", "(╯°Д°）╯︵ /(.□ . \\)", "(╯'□')╯︵ ┻━┻", "(/ .□.)\\ ︵╰(゜Д゜)╯︵ /(.□. \\)", "ʕノ•ᴥ•ʔノ ︵ ┻━┻", "(._.) ~ ︵ ┻━┻ *magic*", "(/¯◡ ‿ ◡)/¯ ~ ┻━┻ *magic*", "ヽ(ຈل͜ຈ)ﾉ︵ ┻━┻", "_|___|_  ╰(º o º╰)", "┻━┻ ヘ╰( •̀ε•́ ╰)", "(ノ°▽°)ノ︵┻━┻", "(╯ ͝° ͜ʖ͡°)╯︵ ┻━┻", "┻━┻ ︵﻿ ¯\\(ツ)/¯ ︵ ┻━┻"]
 const unflip = ["┬─┬﻿ ノ( ゜-゜ノ) ", "┬─┬﻿ ︵ /(.□. \\）", "┬─┬ ノ( ^_^ノ)", "(/ .□.)\\ ︵╰(゜Д゜)╯︵ /(.□. \\)", "┬─┬ノ(ಠ_ಠノ)", "┬──┬﻿ ¯\\_(ツ)", "┬─┬ノ( º _ ºノ)", "┬─┬ノ( ◕◡◕ ノ)", "┏━┓ ︵ /(^.^/)", "┳━┳ ヽ༼ಠل͜ಠ༽ﾉ", "┬━┬﻿ ノ( ゜¸゜ノ)", "ヽ（ ﾟヮﾟ）ﾉ.・ﾟ*｡・+☆ ┳━┳", "┬──┬ ლ(ಠ益ಠლ)"]
 
+var update = "ShadeBot: 1.7.7 (Colour Update)"
+
 var avatar                                      // This is used for Storing of the Profile picture of a user who sends the message
 var messageTaken = true                         // Crappy Anti spam of messages
 var welcomeOption = 0
@@ -156,7 +158,11 @@ client.on('disconnected', () => {
 client.on('message', message => {
 	if (message.channel.type == "dm") {
 		if (message.author.id != client.user.id) {
-			return conlog(`${message.author.tag} sent a Private Message to ShadeBot:\n${message.content}`)
+			if (!message.attachments.first()) {
+				return conlog(`${message.author.tag} sent a Private Message to ShadeBot:` + chalk.white(`\nMessage: ${message.content}`))
+			} else {
+				return conlog(`${message.author.tag} sent a Private Message to ShadeBot` + chalk.white(`\nMessage: ${message.content} \nAttachment: ${message.attachments.first().url}`))
+			}
 		} else { return }
 	}
 	addRoomDatabase(message)
@@ -164,12 +170,12 @@ client.on('message', message => {
 	
     // Checks and removes Discord Links
     if (invite.test(message.content) && channels[message.channel.id].invitesAllowed != "true" && !message.author.bot) {
-        conlog(message.author.tag + " sent a Discord link") // Logs
+        conlog(`${message.author.tag} sent a Discord link in ${message.channel.name}\n` + chalk.white(`Message: ${message.content}`)) // Logs
         message.delete();
         message.channel.send(`<:ShadeBotProfile:326817503076679690> Rule #8: Please do not Advertise other Discords <@${message.author.id}>\nDoing this may cause you to be banned.`) // Sends Message + mentions
         const logChannel = message.guild.channels.find('id', config.logId);
         if (!logChannel) return;
-        logChannel.send("<@" + message.author.id + "> posted a Discord link in <#" + message.channel.id + ">\n" + message.content);
+	logChannel.send(`<@${message.author.id}> posted a Discord link in <#${message.channel.id}>\nMessage: ${message.content}`);
 
     }
         // Image command
@@ -192,16 +198,16 @@ client.on('message', message => {
 					.setImage(link)
 					.setColor("#FFEB3B")
 					.setFooter("Image sent by, " + message.author.tag + " (" + message.author.id + ")", message.author.displayAvatarURL);
-                message.channel.sendEmbed(linkEmbed);
+                message.channel.send({ embed: linkEmbed });
             } else if (gyazoImage.test(link) || imgurImage.test(link)) {
                 let linkSplit = link.split('/');
-                let newLink = "https://i." + linkSplit[2] + "/" + linkSplit[3] + ".png"
+				let newLink = `https://i.${linkSplit[2]}/${linkSplit[3]}.png`
 
                 let linkEmbed = new Discord.RichEmbed()
 					.setImage(newLink)
 					.setColor("#FFEB3B")
-					.setFooter("Image sent by, " + message.author.tag + " (" + message.author.id + ")", message.author.displayAvatarURL);
-                message.channel.sendEmbed(linkEmbed);
+			.setFooter(`Image sent by, ${message.author.tag} (${message.author.id})`, message.author.displayAvatarURL);
+                message.channel.send({ embed: linkEmbed });
             } else {
                 message.author.send("Usage: ``" + config.prefix + "image (url)``\n - Links **must** be starting with ``http(s)://``\n - Links *should* end in `.png` `.jpg` `.jpeg` or `.gif`\n - Alternatively the command supports links from osu!, Steam and Gyazo (Static) that do not have these file endings!");
             }
@@ -213,15 +219,15 @@ client.on('message', message => {
     else if (chillLink.test(command) && channels[message.channel.id].linksAllowed != "true") {
         conlog(`${message.author.tag} sent a link in #${message.channel.name}`) // Logs
         message.delete();
-	message.channel.send(`<:ShadeBotProfile:326817503076679690> <#${message.channel.id}> rule: No links in this room. <@${message.author.id}>.\nDoing this may cause you to be Muted/Kicked/Banned`) // Sends Message + mentions
+		message.channel.send(`<:ShadeBotProfile:326817503076679690> <#${message.channel.id}> rule: No links in this room. <@${message.author.id}>.\nDoing this may cause you to be Muted/Kicked/Banned`) // Sends Message + mentions
         
 		const logChannel = message.guild.channels.find('id', config.logId);
-		if (logChannel == null) return console.log("Log Channel doesn't exist!!");
+		if (logChannel == null) return console.log(chalk.redBright("Log Channel doesn't exist!!"));
         let linkEmbed = new Discord.RichEmbed()
 			.setTitle(message.author.tag + " posted link in " + message.channel.name, message.author.displayAvatarURL)
 			.setDescription("Message: " + message.content)
 			.setColor("#212121")
-        logChannel.sendEmbed(linkEmbed)
+        logChannel.send({ embed: linkEmbed })
 
     }
 		// Mention spammer
@@ -258,7 +264,7 @@ client.on('message', message => {
     if (message.channel.id === config.welcome.passwordRoomId && (command === config.welcome.password.toLowerCase()) || command === `${config.welcome.password.toLowerCase()}.`) {
 		message.guild.fetchMember(message.author)
 			.then(member => {
-			if (member.roles.has(config.roles.mod) || member.roles.has(config.roles.admin)) {
+			if (member.roles.some(r=>config.roles.staff.includes(r.id))) {
 				message.delete()
 				return message.author.send("Sorry but you're Mod / Admin, you cannot welcome yourself!")
 			}
@@ -276,7 +282,7 @@ client.on('message', message => {
 					    if (err) console.error(err)
 				    });
 				    var extraMessage = gameswelcome.welcome[Math.floor(Math.random() * gameswelcome.welcome.length)];
-				    welChannel.send(`<:ShadeBotWelcome:326815681540784139> **Welcome to the server <@${message.author.id}>** <:ShadeBotWelcome:326815681540784139>\n${extraMessage}\n*${storage[1].welcomeNum} user(s) have been welcomed today.*`)
+				    welChannel.send(`<:ShadeBotWelcome:326815681540784139> **Welcome to the server <@${message.author.id}>** <:ShadeBotWelcome:326815681540784139>\n${extraMessage} *${storage[1].welcomeNum} user(s) have been welcomed today.*`)
 						.then(function (message) { message.react("🎉") })
 						.catch(function () { console.log(chalk.redBright("Failed to Add Emojis to Welcoming message")) });
 			    } else if (welcomeOption == 1) {
@@ -285,9 +291,10 @@ client.on('message', message => {
 			
 			    if (config.welcome.logging == "true") {
 			        let welcomeEmbed = new Discord.RichEmbed()
-                        .setDescription(":tada: **" + message.author.tag + "** has been ``welcomed`` to the server. (" + message.author.id + ")")
+				.setDescription(`:tada: **${message.author.tag}** has been \`\`welcomed\`\` to the server. (${message.author.id})`)
                         .setColor("#0D47A1")
-                        .setFooter("User Welcomed | " + storage[1].welcomeNum + " user(s) welcomed today", message.author.displayAvatarURL);
+                        .setFooter(`User Welcomed | ${storage[1].welcomeNum} user(s) welcomed today`, message.author.displayAvatarURL)
+						.setTimestamp(new Date())
 
 				    const logChannel = message.guild.channels.find('id', config.logId);
 				    if (logChannel == null) return console.log(chalk.redBright("Log Channel doesn't exist!!"));
@@ -296,8 +303,7 @@ client.on('message', message => {
 
             } else if (avatar.startsWith('https://discordapp.com/assets/')) { // Checks if it's a Default Discord picutre
                 conlog(message.author.tag + " | No Avatar"); // Logs
-
-                message.author.send("Please read the <# " + config.welcome.passwordRoomId + "> room again"); // PMs them what to do.
+				message.author.send(`Please read the <#${config.welcome.passwordRoomId}> room again`); // PMs them what to do.
             } else {
                 conlog(message.author.tag + " | No Avatar / With Avatar"); // Error check?
             }
@@ -307,8 +313,12 @@ client.on('message', message => {
 
         // Checks for Random messages in room
     else if (message.channel.id === config.welcome.passwordRoomId) { // Checks just for messages in User Rank
-        conlog(message.author.tag + " Sent a random message in User Rank\n" + message.content);
-        message.author.send("Please Read the <#" + config.welcome.passwordRoomId + "> room again"); // PMs them what to do
+	if (!message.attachments.first()) {
+				conlog(`${message.author.tag} sent a random message in User Rank:` + chalk.white(`\nMessage: ${message.content}`))
+			} else {
+				conlog(`${message.author.tag} sent a random message in User Rank:` + chalk.white(`\nMessage: ${message.content} \nAttachment: ${message.attachments.first().url}`))
+			}
+	message.author.send(`Please Read the <#${config.welcome.passwordRoomId}> room again`); // PMs them what to do
         message.delete();
     }
 
@@ -439,7 +449,7 @@ client.on('message', message => {
                 .setDescription(`💰 You currently have ${userData.money} ShadeBucks\n*You have had a total of ${userData.total} ShadeBucks in your account*`)
                 .setColor("#4CAF50")
                 .setFooter(balTag, balPFP);
-        message.channel.sendEmbed(balEmbed)
+        message.channel.send({ embed: balEmbed })
 		
 		if (userData.money == null) { 
 		  message.channel.send("<@&321024631072882688> Error Encountered...")
@@ -483,7 +493,7 @@ client.on('message', message => {
                 "text": `${message.author.tag}`
             }
         };
-        message.channel.sendEmbed(Bembed);
+        message.channel.send({ embed: Bembed });
 		
 		let userData = storage[addUser.id];
 		numMoney = parseInt(numMoney * 0.9)
@@ -497,7 +507,7 @@ client.on('message', message => {
                 "text": `${addUser.user.tag}`
             }
         };
-        message.channel.sendEmbed(Aembed);
+        message.channel.send({ embed: Aembed });
     }
     else if (command.startsWith(config.prefix + "luckydip") || command.startsWith(config.prefix + "ld") && (channels[message.channel.id].botCommandsAllowed == "true")) {
         let args = command.split(' ').slice(1);
@@ -701,7 +711,7 @@ client.on('message', message => {
 	}
 
         /* Personal Commands to fix stuff */
-    else if (command.startsWith(config.prefix + "clear") && message.author.id === config.ownerId) {
+    else if (command.startsWith(config.prefix + "clear") && config.ownerId.indexOf(message.author.id) != -1) {
         message.delete();
         let args = command.split(' ').slice(1);
         let deleteCount = parseInt(args[0], 10)
@@ -710,8 +720,10 @@ client.on('message', message => {
 		
 		if(!message.guild.member(client.user).hasPermission("MANAGE_MESSAGES")) return message.channel.send("Error, i do not have manage message permissions");
 		message.channel.bulkDelete(deleteCount).catch(console.error);
+		
+		
     }
-	else if (command.startsWith(config.prefix + "welcomenum") && message.author.id === config.ownerId) {
+	else if (command.startsWith(config.prefix + "welcomenum") && config.ownerId.indexOf(message.author.id) != -1) {
         message.delete();
         let args = command.split(' ').slice(1);
         storage[1].welcomeNum = args[0];
@@ -721,13 +733,13 @@ client.on('message', message => {
         });
 
     }
-	else if (command == config.prefix + "botinfo" && message.author.id === config.ownerId) {
+	else if (command == config.prefix + "botinfo" && config.ownerId.indexOf(message.author.id) != -1) {
 		let systemUptime = format(os.uptime())
 		let processUptime = format(process.uptime())
 		
         const embed = new Discord.RichEmbed()
             .setColor(`#0D47A1`)
-            .setTitle(`ShadeBot V1.7.7 (Colour update)`)
+            .setTitle(update)
             .setURL('https://github.com/Alipoodle/shadebot-discord')
             .addField('Guilds', client.guilds.size, true)
 			.addField('Channels', client.channels.size, true)
@@ -743,7 +755,7 @@ client.on('message', message => {
 
         message.channel.send({ embed });
 	}
-    else if (command.startsWith(config.prefix + "roles add") && message.author.id === config.ownerId) {
+    else if (command.startsWith(config.prefix + "roles add") && config.ownerId.indexOf(message.author.id) != -1) {
 		let args = command.split(' ').slice(1);
 		
 		if (!args[2] > 0) {
@@ -764,7 +776,7 @@ client.on('message', message => {
 		}
 		
 	}
-	else if (command.startsWith(config.prefix + "settings edit") && message.author.id === config.ownerId) {
+	else if (command.startsWith(config.prefix + "settings edit") && config.ownerId.indexOf(message.author.id) != -1) {
 		if(!message.member.roles.some(r=>config.roles.staff.includes(r.id)) ) {
 			message.reply("Sorry, you don't have permissions to use this!")
 				.then(function (message) { setTimeout(() => message.delete(), config.messageTimeout)})
@@ -873,8 +885,11 @@ client.on('message', message => {
         }
 	}
 	else if (command.startsWith(config.prefix + "welcome")) {
-		if(!message.member.roles.some(r=>config.roles.staff.includes(r.id))) {
-			return message.reply("Sorry, you don't have permissions to use this!");
+		if(!message.member.roles.some(r=>config.roles.staff.includes(r.id)) ) {
+			message.reply("Sorry, you don't have permissions to use this!")
+				.then(function (message) { setTimeout(() => message.delete(), config.messageTimeout)})
+				.catch(function () { messagefail});
+			return;
 		}
 		
 		if (welcomeOption == 1) {
@@ -892,7 +907,7 @@ client.on('message', message => {
 			message.reply("Sorry, you don't have permissions to use this!")
 				.then(function (message) { setTimeout(() => message.delete(), config.messageTimeout)})
 				.catch(function () { messagefail});
-            return;
+			return;
 		}
 		let mentionedChannel = message.mentions.channels.first()
 		if (mentionedChannel == null){
@@ -906,8 +921,12 @@ client.on('message', message => {
 	}
 	else if (command.startsWith(config.prefix + "roles ban")) {
 		// #roles ban @MENTION role
-		if(!message.member.roles.some(r=>config.roles.staff.includes(r.id)))
+		if(!message.member.roles.some(r=>config.roles.staff.includes(r.id)) ) {
 			message.reply("Sorry, you don't have permissions to use this!")
+				.then(function (message) { setTimeout(() => message.delete(), config.messageTimeout)})
+				.catch(function () { messagefail});
+			return;
+		}
 		let args = command.split(' ').slice(2);
         let mentionedUser = message.mentions.users.first();
         //let roleBanUser = message.guild.member(mentionedUser);
@@ -942,8 +961,12 @@ client.on('message', message => {
 	}
 	else if (command.startsWith(config.prefix + "roles unban")) {
 		// #roles ban @MENTION role
-		if(!message.member.roles.some(r=>config.roles.staff.includes(r.id)) )
-				message.reply("Sorry, you don't have permissions to use this!")
+		if(!message.member.roles.some(r=>config.roles.staff.includes(r.id)) ) {
+			message.reply("Sorry, you don't have permissions to use this!")
+				.then(function (message) { setTimeout(() => message.delete(), config.messageTimeout)})
+				.catch(function () { messagefail});
+			return;
+		}
 		let args = command.split(' ').slice(2);
         let mentionedUser = message.mentions.users.first();
         //let roleBanUser = message.guild.member(mentionedUser);
@@ -984,8 +1007,12 @@ client.on('message', message => {
 		}
 	}
 	else if (command.startsWith(config.prefix + "library add")) {
-		if(!message.member.roles.some(r=>config.roles.staff.includes(r.id)) )
-			return message.reply("Sorry, you don't have permissions to use this!");
+		if(!message.member.roles.some(r=>config.roles.staff.includes(r.id))) {
+			message.reply("Sorry, you don't have permissions to use this!")
+				.then(function (message) { setTimeout(() => message.delete(), config.messageTimeout)})
+				.catch(function () { messagefail});
+			return;
+		}
 		let args = message.content.split(' ').slice(2);
 		let library = args[0].toLowerCase()
 		let image = args[1]
@@ -1025,8 +1052,12 @@ client.on('message', message => {
 		}
 	}
 	else if (command.startsWith(config.prefix + "library room")) {
-		if(!message.member.roles.some(r=>config.roles.staff.includes(r.id)) )
-			return message.reply("Sorry, you don't have permissions to use this!");
+		if(!message.member.roles.some(r=>config.roles.staff.includes(r.id)) ) {
+			message.reply("Sorry, you don't have permissions to use this!")
+				.then(function (message) { setTimeout(() => message.delete(), config.messageTimeout)})
+				.catch(function () { messagefail});
+			return;
+		}
 		let args = command.split(' ').slice(2);
 		let library = args[0]
 		let room = args[1]
@@ -1135,13 +1166,13 @@ client.on('message', message => {
                 .setDescription(`💰 You currently have ${userData.points} points`)
                 .setColor("#004D40")
                 .setFooter(balTag, balPFP);
-        message.channel.sendEmbed(balEmbed)
+        message.channel.send({ embed: balEmbed })
     }
 
 	else if (command === (config.prefix + "help")) {
 		const embed = new Discord.RichEmbed()
             .setColor(`#0D47A1`)
-            .setTitle(`ShadeBot V1.7.7 (Colour update)`)
+            .setTitle(update)
             .setURL('https://github.com/Alipoodle/shadebot-discord')
 			.setDescription("Hello, I am Shadebot, the server's servant. I was made by <@183931930935427073>\n**If you are looking for specific help; most commands will have better help if you just post the command without any of the arguments!**\n\n**You can find the current commands below:**")
             .addField(config.prefix + 'daily', 'This allows you to pick up a small amount of money every 24 hours!', true)
@@ -1155,11 +1186,12 @@ client.on('message', message => {
             .setFooter('Created by Alipoodle#5025', 'https://alipoodle.me/small.gif');
 
         message.author.send({ embed });
+		message.channel.send("**I've private messaged you the help!** *(If you have it disabled on the server could you please not! As I use PMs for various different things)*")
 	}
-	else if (command === (config.prefix + "help -m")) {
+	else if (command === (config.prefix + "help -m") && message.member.roles.some(r=>config.roles.staff.includes(r.id))) {
 		const embed = new Discord.RichEmbed()
-            .setColor(`#0D47A1`)
-            .setTitle(`ShadeBot V1.7.7 (Colour update)`)
+            .setColor(`#dffd80`)
+            .setTitle(update)
             .setURL('https://github.com/Alipoodle/shadebot-discord')
 			.setDescription("Hello, I am Shadebot, the server's servant. I was made by <@183931930935427073>\n**If you are looking for specific help; most commands will have better help if you just post the command without any of the arguments!**\n\n**You can find the current mod/admin commands below:**")
             .addField(config.prefix + 'mute @mention [time: 10m / 2hour', 'Person who\'s being a little annoying in chat. Give them a little silence for a while.', true)
@@ -1172,10 +1204,10 @@ client.on('message', message => {
 
         message.author.send({ embed });
 	}
-	else if (command === (config.prefix + "help -a")) {
+	else if (command === (config.prefix + "help -a") && config.ownerId.indexOf(message.author.id) != -1) {
 		const embed = new Discord.RichEmbed()
-            .setColor(`#0D47A1`)
-            .setTitle(`ShadeBot V1.7.7 (Colour update)`)
+            .setColor(`#bc0fff`)
+            .setTitle(update)
             .setURL('https://github.com/Alipoodle/shadebot-discord')
 			.setDescription("Hello, I am Shadebot, the server's servant. I was made by <@183931930935427073>\n**If you are looking for specific help; most commands will have better help if you just post the command without any of the arguments!**\n\n**You can find the current admin commands below:**")
             .addField(config.prefix + 'botinfo', 'Keep an eye on all the different bits of info about the bot.', true)
@@ -1190,7 +1222,7 @@ client.on('message', message => {
 	}
         // Random Text based Commands.
         // ILY Bot, Little random thing i though i should add to the bot!
-    else if (command.includes("ily") && command.includes("shadebot") && message.author.id === config.ownerId) {
+    else if (command.includes("ily") && command.includes("shadebot") && config.ownerId.indexOf(message.author.id) != -1) {
         message.channel.send("💬 Love you toooo! <:AliMercyHeart2:326076862503845890> <:AliMercyHeart:306055342490517506>")
     }
 	
@@ -1215,11 +1247,10 @@ client.on('message', message => {
         } else if (command.includes("luvbug") && message.author.id === "183800599945412610") {			// Auroa's Command
             message.channel.send("💬 gwizzy is your little luvbug auro~ (🌸  ՞ゥ ՞)ゞ﻿")
         } else if (command.includes("shadebutt") && message.author.id === "108291699171659776") {			// Rizako's Command
-            message.channel.send("💬 Put it in Riz-sensei <:ShadeBottriGasm:326816756494761996>"); //
             if (message.channel.id === "153958699872813056") {
                 let nsfwFile = "https://i.imgur.com/IEREMnK.png";
-                message.channel.sendFile(nsfwFile);
-			}
+				message.channel.send("💬 Put it in Riz-sensei <:ShadeBottriGasm:326816756494761996>", { file: nsfwFile });
+			} else { message.channel.send("💬 Put it in Riz-sensei <:ShadeBottriGasm:326816756494761996>"); }
         } else if (command.includes("shadebutt") && message.author.id != "108291699171659776") {
             message.channel.send("💬 I'm sorry, but that's only for Rizako 😉")
         } else if (command === ("damn") && message.author.id === "111911375269330944") {					// Grizz's Command
@@ -1282,3 +1313,14 @@ client.on("warn", (e) => console.warn(chalk.yellow("Warning: " + e)));
 // !message.guild.member(client.user).hasPermission("BAN_MEMBERS")
 
 client.login(config.token);
+
+/* Purge specific users messages.
+let messagecount = parseInt(args[0], 10) ? parseInt(args[0], 10) : 1;
+  msg.channel.messages.fetch({limit: 100})
+  .then(messages => {
+    let msg_array = messages.array();
+    msg_array = msg_array.filter(m => m.author.id === client.user.id);
+    msg_array.length = messagecount + 1;
+    msg_array.map(m => m.delete().catch(console.error));
+   });
+   */

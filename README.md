@@ -30,7 +30,9 @@ If for some reason you have ran `installer.bat`, it disapeared and it didnt crea
 
 #### < Linux / Mac >
 
-Executable files are kind of weird in linux, and users most likely use console to do their work, so to setup this selfbot on linux or mac open a terminal in the directory you downloaded the files to and type `npm i`. Once it is finished you can start the selfbot by using `npm start` or `node self.js`. If you did everything correctly, the bot should start up fine.
+Executable files are kind of weird in linux, and users most likely use console to do their work. So to setup this bot on linux or mac open a terminal in the directory you downloaded the files to and and either type `./installer.sh` or if the script doesn't work manually type `npm i`.
+
+Once it is finished you can start the bot by using the `run.sh` script that will keep restarting the bo if it crashes (if the installer worked correctly) otherwise try `npm start` or `node self.js`. If you did everything correctly, the bot should start up fine.
 
 ### - Feautres -
 

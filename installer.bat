@@ -3,6 +3,7 @@ title Node.js Modules Installer
 
 echo / ---------------------------------------------- /
 echo           ShadeBot created by Alipoodle
+echo          Installer made by TheRacingLion
 echo                 6 / 12 / 2016
 echo               All rights reserved.
 echo / ---------------------------------------------- /
@@ -16,7 +17,8 @@ echo Done!
 echo Creating run files for Selfbot...
 echo ------------------------------------
 echo @echo off > run.bat
-echo :: Created by TheRacingLion (https://github.com/TheRacingLion) [ 6 / 12 / 2016 ] >> run.bat
+echo :: Script created by TheRacingLion (https://github.com/TheRacingLion) [ 6 / 12 / 2016 ] >> run.bat
+echo :: Bot created by Alipoodle (https://github.com/Alipoodle) [ 28 / 09 / 2017 ] >> run.bat
 echo :: -*Read LICENSE to know more about permissions*- >> run.bat
 echo title Discord ShadeBot >> run.bat
 echo :START >> run.bat

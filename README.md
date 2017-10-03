@@ -1,5 +1,4 @@
-# ShadeBot
-<img src="https://alipoodle.me/i/96NdQ.png" align="right" height="250" width="250" />
+# ShadeBot <img src="https://alipoodle.me/i/96NdQ.png" align="right" height="250" width="250" />
 
 ShadeBot is a discord bot primarily made for the Hentai! server Discord! It's function is to welcome people using a special welcome room. When users join the server, they can only see #announcements #rules and #go-here-for-user-rank and they need to have a profile picture &  type a specific password. In our case it's simply **Hi**. They will then be welcomed in the primary chat room.
 

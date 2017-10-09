@@ -1,7 +1,8 @@
-﻿const Discord = require('discord.js');
+const Discord = require('discord.js');
 const fs = require("fs"); // Reading of Files
 const os = require('os');
 const chalk = require('chalk'); //https://www.npmjs.com/package/chalk#styles
+const request = require('request');
 
 const client = new Discord.Client();
 
@@ -123,8 +124,7 @@ function conlog(message) {
 		console.log(chalk.cyan(`${getTime()} : `) + chalk.cyan.bold(message))
 	} else {
 		console.log(chalk.cyan(` ${getTime()} : `) + chalk.cyan.bold(message))
-	}
-	
+	}	
 }
 
 
@@ -282,7 +282,7 @@ client.on('message', message => {
 					    if (err) console.error(err)
 				    });
 				    var extraMessage = gameswelcome.welcome[Math.floor(Math.random() * gameswelcome.welcome.length)];
-				    welChannel.send(`<:ShadeBotWelcome:326815681540784139> **Welcome to the server <@${message.author.id}>** <:ShadeBotWelcome:326815681540784139>\n${extraMessage} *${storage[1].welcomeNum} user(s) have been welcomed today.*`)
+				    welChannel.send(`<:ShadeBotWelcome:326815681540784139> **Welcome to the server <@${message.author.id}>** <:ShadeBotWelcome:326815681540784139>\n${extraMessage} | *${storage[1].welcomeNum} user(s) have been welcomed today.*`)
 						.then(function (message) { message.react("🎉") })
 						.catch(function () { console.log(chalk.redBright("Failed to Add Emojis to Welcoming message")) });
 			    } else if (welcomeOption == 1) {
@@ -706,8 +706,70 @@ client.on('message', message => {
 			message.reply("Error: <@&321024631072882688>... please wait.")
 		}
 	}
-	else if (command.startsWith(config.prefix + "osu")) {
-		// https://www.npmjs.com/package/node-osu
+	else if (command.startsWith(config.prefix + "osu") && message.channel.id == "154210492381003776") {
+		// https://osu.ppy.sh/api/get_user?k=<KEY>&u=Alipoodle&m=3
+		let args = command.split(' ').slice(1);
+		let account = args[0]
+		let mode = args[1]
+		
+		if (!account) { return message.reply(`It seems you haven't provided an account. \`${config.prefix}osu (osu username) [mode]\``)}
+		
+		if(!mode || mode < 0 || mode > 4) { mode = 0 } // Default Game
+		else if (mode.indexOf("o") == 0) { mode = 0 }
+		else if (mode.indexOf("t") == 0) { mode = 1 }
+		else if (mode.indexOf("c") == 0) { mode = 2	}
+		else if (mode.indexOf("m") == 0) { mode = 3	}
+		else { mode = 0 }
+		
+		
+		
+		request(`https://osu.ppy.sh/api/get_user?k=${config.osuKey}&u=${account}&m=${mode}`, (error, response, body) => {
+			var json = JSON.parse(body);
+			
+			if(json.length == 0) { message.reply("No User found .-.") }
+			else {
+				let osu = json[0]
+				let osuEmbed = new Discord.RichEmbed()
+					.setColor(`#FF66AA`)
+					.setTitle(`${osu.username}`)
+					.setURL(`https://osu.ppy.sh/u/${osu.user_id}`)
+					.addField(`PP `, Math.ceil(osu.pp_raw), true)
+					.addField(`Rank`,`#${osu.pp_rank} (${osu.country}: #${osu.pp_country_rank})`, true)
+					.addField(`Play Count`, osu.playcount, true)
+					.addField(`Accuracy`, `${parseFloat(osu.accuracy).toFixed(2)}%`, true)
+					.addField(`Level`, parseFloat(osu.level).toFixed(2), true)
+					.addField(`Ranks`, `SS: ${osu.count_rank_ss} | S: ${osu.count_rank_s} | A: ${osu.count_rank_a}`, true)
+					/*.addField(`Top Play`, topPlay, false) */
+					.setThumbnail(`https://a.ppy.sh/${osu.user_id}`)
+				message.channel.send({ embed: osuEmbed })
+							
+				/*request(`https://osu.ppy.sh/api/get_user_best?k=${config.osuKey}&u=${account}&m=${mode}`, (error2, response2, body2) => {
+					var json2 = JSON.parse(body2)
+					console.log(body2)
+					
+					var topPlay = "";
+					if(json2.length == 0) { topPlay = "Don't seem to have a top play" }
+					else {
+						let best = json2[0]
+						
+						request(`https://osu.ppy.sh/api/get_beatmaps?k=${config.osuKey}&b=${best.beatmap_id}`, (error3, response3, body3) => {
+							console.log(body3)
+							var json3 = JSON.parse(body3)
+							if(json3.length == 0) { topPlay += "Failed to find Beatmap"}
+							else {
+								let beatmap = json3[0]
+								topPlay += `${beatmap.artist} - ${beatmap.title} [${beatmap.version} (${parseFloat(beatmap.difficultyrating).toFixed(2)}*)]`
+								topPlay += ` **${parseFloat(best.pp).toFixed(1)} pp**`
+							}
+							
+							
+						})
+						 
+					}
+				}) */
+				
+			}
+		})
 	}
 
         /* Personal Commands to fix stuff */
@@ -740,7 +802,7 @@ client.on('message', message => {
         const embed = new Discord.RichEmbed()
             .setColor(`#0D47A1`)
             .setTitle(update)
-            .setURL('https://github.com/Alipoodle/shadebot-discord')
+            .setURL('https://github.com/ShadeBot/ShadeBot-Discord-Bot')
             .addField('Guilds', client.guilds.size, true)
 			.addField('Channels', client.channels.size, true)
 			.addField('Members', client.users.size, true)
@@ -825,7 +887,23 @@ client.on('message', message => {
 		});
 		
 	} 
-
+	
+	/*else if (command.startsWith(config.prefix + "roleroom") && config.ownerId.indexOf(message.author.id) != -1 && message.channel.id == config.roles.room) {
+		message.delete()
+		let general = "https://puu.sh/xKdcg/0f15837bb1.png"
+		let gaming = "https://puu.sh/xKdhw/6dec248a65.png"
+		let nsfw = "https://puu.sh/xKdlt/2c0a38eaf9.png"
+		
+		message.channel.send("```css\nIn here you can ask for roles that you would like to have.\nSimply say the roles you want and add \"remove\" to remove them\n```", {file: general})
+		setTimeout(() => message.channel.send("``` Events              | Support (Rare Weeb) ```", {file: gaming}), 2500)
+		
+		setTimeout(() => message.channel.send("```\n Counter Strike GO   | Diablo              | Dota 2\n GTA V               | Hearthstone         | Killing Floor\n League of Legends   | Minecraft           | osu!\n Overwatch           | PUBG                | Rainbow 6 Siege\n Rocket League       | World of Warcraft\n```", {file: nsfw}), 5000)
+		
+		setTimeout(() => message.channel.send("```\n Furry Pass          | Futa Pass           | Yaoi Pass\n```\n*you can get **multiple roles** in one message*"), 7500)
+		
+		
+	}*/
+	
     else if (command.startsWith(config.prefix + "mute") || command.startsWith(config.prefix + "m")) {
 		if(!message.member.roles.some(r=>config.roles.staff.includes(r.id)) ) {
 			message.reply("Sorry, you don't have permissions to use this!")
@@ -854,7 +932,7 @@ client.on('message', message => {
 			}
 			return;
         } else {
-			if (!amount > 0) {
+			if (!amount > 0 || amount > 170) {
 				return message.reply("Sorry but i didn't understand the amount of time you wanted please do ``1hour`` or ``10m``")
 			}
 			
@@ -1062,6 +1140,9 @@ client.on('message', message => {
 		let library = args[0]
 		let room = args[1]
 		
+		if (!nsfw[library]) {
+			
+		}
 	}
 	else if (command.startsWith(config.prefix + "post")) {
 		let args = command.split(' ').slice(1);
@@ -1173,7 +1254,7 @@ client.on('message', message => {
 		const embed = new Discord.RichEmbed()
             .setColor(`#0D47A1`)
             .setTitle(update)
-            .setURL('https://github.com/Alipoodle/shadebot-discord')
+            .setURL('https://github.com/ShadeBot/ShadeBot-Discord-Bot')
 			.setDescription("Hello, I am Shadebot, the server's servant. I was made by <@183931930935427073>\n**If you are looking for specific help; most commands will have better help if you just post the command without any of the arguments!**\n\n**You can find the current commands below:**")
             .addField(config.prefix + 'daily', 'This allows you to pick up a small amount of money every 24 hours!', true)
 			.addField(config.prefix + 'send (@mentions)', "Send a bit of money to a friend (Although there's 10% tax)", true)
@@ -1192,7 +1273,7 @@ client.on('message', message => {
 		const embed = new Discord.RichEmbed()
             .setColor(`#dffd80`)
             .setTitle(update)
-            .setURL('https://github.com/Alipoodle/shadebot-discord')
+            .setURL('https://github.com/ShadeBot/ShadeBot-Discord-Bot')
 			.setDescription("Hello, I am Shadebot, the server's servant. I was made by <@183931930935427073>\n**If you are looking for specific help; most commands will have better help if you just post the command without any of the arguments!**\n\n**You can find the current mod/admin commands below:**")
             .addField(config.prefix + 'mute @mention [time: 10m / 2hour', 'Person who\'s being a little annoying in chat. Give them a little silence for a while.', true)
 			.addField(config.prefix + 'roles (ban / unban) @mentions (role)', "Someone's failed to follow the rules in a room, this will ban them from being able to gain this role in the assigned role room.", true)
@@ -1208,7 +1289,7 @@ client.on('message', message => {
 		const embed = new Discord.RichEmbed()
             .setColor(`#bc0fff`)
             .setTitle(update)
-            .setURL('https://github.com/Alipoodle/shadebot-discord')
+            .setURL('https://github.com/ShadeBot/ShadeBot-Discord-Bot')
 			.setDescription("Hello, I am Shadebot, the server's servant. I was made by <@183931930935427073>\n**If you are looking for specific help; most commands will have better help if you just post the command without any of the arguments!**\n\n**You can find the current admin commands below:**")
             .addField(config.prefix + 'botinfo', 'Keep an eye on all the different bits of info about the bot.', true)
 			.addField(config.prefix + 'welcomenum (number)', "Change the current number shown on the welcoming counter. (Generally used for when something goes wrong)", true)
@@ -1220,14 +1301,16 @@ client.on('message', message => {
 
         message.author.send({ embed });
 	}
-        // Random Text based Commands.
+    
+
+    // Random Text based Commands.
         // ILY Bot, Little random thing i though i should add to the bot!
     else if (command.includes("ily") && command.includes("shadebot") && config.ownerId.indexOf(message.author.id) != -1) {
         message.channel.send("💬 Love you toooo! <:AliMercyHeart2:326076862503845890> <:AliMercyHeart:306055342490517506>")
     }
 	
     if (messageTaken == true && channels[message.channel.id].allowReplyMessages == "true") {
-        if (command.includes("ily") && command.includes("shadebot") && message.author.id != config.ownerId) { // Alipoodle's command
+        if (command.includes("ily") && command.includes("shadebot") && config.ownerId.indexOf(message.author.id) == -1) { // Alipoodle's command
             message.channel.send("💬 Sorry I'm taken 😘")
         } else if (command.includes("shadebitch") || command.includes("shadebetch")) {	// Community Command
 			let random = Math.floor(Math.random() * 10);
@@ -1235,6 +1318,8 @@ client.on('message', message => {
 			else { message.channel.send("💬 That's not my name... Plz No Bully me <:ShadeBotRude:326816154083393536>"); }
         } else if (command.includes("shadebot-sama") && message.author.id === "193371641848266752") {		// Lenny's Custom Command
             message.channel.send("💬 Y-yes Lenny-chan? >w< *nuzzles nosey*")
+		} else if (command.includes("shadebot-sama") && message.author.id != "193371641848266752") {
+			message.channel.send("💬 I'm not gay sorry")
         } else if (command.includes("goodbot") && message.author.id === "241593793579712512") {			// Rufy's Custom Command
             message.channel.send("💬 Yes Rufy-kun! *hhhhhh* I'll be a good girl... *groans as i stare at his buldge*");
         } else if (command.includes("goodbot") && message.author.id != "241593793579712512") {
@@ -1272,23 +1357,35 @@ client.on('message', message => {
     }
 });
 
-/*
-client.on('guildMemberAdd', member => {
+client.on("messageUpdate", (oldMessage, newMessage) => {
+		// Invite checker
+	if (invite.test(newMessage.content) && channels[newMessage.channel.id].invitesAllowed != "true" && !newMessage.author.bot) {
+        conlog(`${newMessage.author.tag} sent a Discord link in ${newMessage.channel.name}\n` + chalk.white(`Message: ${newMessage.content}`)) // Logs
+        newMessage.delete();
+        newMessage.channel.send(`<:ShadeBotProfile:326817503076679690> Rule #8: Please do not Advertise other Discords <@${newMessage.author.id}>\nDoing this may cause you to be banned.`) // Sends Message + mentions
+        const logChannel = newMessage.guild.channels.find('id', config.logId);
+        if (!logChannel) return;
+	logChannel.send(`<@${newMessage.author.id}> posted a Discord link in <#${newMessage.channel.id}>\nMessage: ${newMessage.content}`);
+
+    }
+
+        // Link checker
+    else if (chillLink.test(newMessage.content) && channels[newMessage.channel.id].linksAllowed != "true") {
+        conlog(`${newMessage.author.tag} sent a link in #${newMessage.channel.name}`) // Logs
+        newMessage.delete();
+		newMessage.channel.send(`<:ShadeBotProfile:326817503076679690> <#${newMessage.channel.id}> rule: No links in this room. <@${newMessage.author.id}>.\nDoing this may cause you to be Muted/Kicked/Banned`) // Sends Message + mentions
+        
+		const logChannel = newMessage.guild.channels.find('id', config.logId);
+		if (logChannel == null) return console.log(chalk.redBright("Log Channel doesn't exist!!"));
+        let linkEmbed = new Discord.RichEmbed()
+			.setTitle(newMessage.author.tag + " posted link in " + newMessage.channel.name, newMessage.author.displayAvatarURL)
+			.setDescription("Message: " + newMessage.content)
+			.setColor("#212121")
+        logChannel.send({ embed: linkEmbed })
+
+    }
 });
-client.on('guildMemberRemove', member => {
-});
-client.on('messageReactionAdd', (reaction, user) => {
-  if (reaction.message.channel.id !== '222086648706498562') return;
-  reaction.message.channel.send(`${user.username} added reaction ${reaction.emoji}, count is now ${reaction.count}`);
-});
-client.on('messageReactionRemove', (reaction, user) => {
-  if (reaction.message.channel.id !== '222086648706498562') return;
-  reaction.message.channel.send(`${user.username} removed reaction ${reaction.emoji}, count is now ${reaction.count}`);
-});
-client.on("presenceUpdate", (oldMember, newMember) => {
-	
-});
-*/
+
 client.on("guildBanAdd", (guild, user) => {
 	conlog(`${user.tag} (id: ${user.id}) has been banned from the server ${guild.name}`)
 	const logChannel = guild.channels.find('name', 'kick-ban-record');
@@ -1313,14 +1410,3 @@ client.on("warn", (e) => console.warn(chalk.yellow("Warning: " + e)));
 // !message.guild.member(client.user).hasPermission("BAN_MEMBERS")
 
 client.login(config.token);
-
-/* Purge specific users messages.
-let messagecount = parseInt(args[0], 10) ? parseInt(args[0], 10) : 1;
-  msg.channel.messages.fetch({limit: 100})
-  .then(messages => {
-    let msg_array = messages.array();
-    msg_array = msg_array.filter(m => m.author.id === client.user.id);
-    msg_array.length = messagecount + 1;
-    msg_array.map(m => m.delete().catch(console.error));
-   });
-   */

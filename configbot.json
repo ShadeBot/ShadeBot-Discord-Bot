@@ -16,7 +16,7 @@
 		"mute":"258258209712635915"
 	},
 	
-	"osuKey": "https://osu.ppy.sh/p/api"
+	"osuKey":"https://osu.ppy.sh/p/api",
 	
 	"messageTimeout":15000,
 	"logId":"246764157762797568"

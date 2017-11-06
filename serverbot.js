@@ -16,7 +16,7 @@ var gameswelcome = JSON.parse(fs.readFileSync("./jsonStorage/games-welcome.json"
 var nsfw = JSON.parse(fs.readFileSync("./jsonStorage/nsfw.json", "utf8"));
 var reply = JSON.parse(fs.readFileSync("./jsonStorage/reply.json", "utf8"));
 
-const update = "ShadeBot: 2.0.1 (Rework Update)"
+const update = "ShadeBot: 2.0.2 (Rework Update)"
 const dm_text = `Hey there! I'm ShadeBot, sadly I won't be able to help you with anything in PM! However do \`${config.prefix}help\`in a public channel that I can see, and I'll give you my help.`;
 var messageTaken = true                         // Crappy Anti spam of messages
 var welcomeOption = 0
@@ -720,7 +720,7 @@ client.on("message", message => {
 			messageLog(message, `<@${message.author.id}> posted a Discord link in <#${message.channel.id}>\nMessage: ${message.content}`)
 		}
 		// Mention spammer - https://github.com/eslachance/nms2/blob/master/events/message.js
-		else if(config.features.mentionSpammer && !message.author.bot && message.mentions.users.size > 1) {
+		else if(config.features.mentionSpammer && !message.author.bot && (message.mentions.users.size > 1 || message.mentions.roles.size > 1)) {
 			if (!message.guild.member(client.user).hasPermission("MANAGE_ROLES")) return console.log(chalk.red("Cannot mute user"))
 			message.guild.fetchMember(message.author)
 			.then(member => {
@@ -772,22 +772,28 @@ client.on("message", message => {
 						if (member.roles.some(r=>config.staffRoles.includes(r.id))) {
 							return message.author.send("Sorry but staff cannot welcome themselves!")
 						}
+						welcomeMessage = config.welcome.message
+						if (welcomeMessage.indexOf("%MENTION%") != -1) welcomeMessage = welcomeMessage.replace("%MENTION%", `<@${message.author.id}>`)
+						if (welcomeMessage.indexOf("%USERNAME%") != -1) welcomeMessage = welcomeMessage.replace("%USERNAME%", message.author.username)
+						if (welcomeMessage.indexOf("%GUILD%") != -1) welcomeMessage = welcomeMessage.replace("%GUILD%", message.guild.name)
+						if (welcomeMessage.indexOf("%EXTRAMSG%") != -1) welcomeMessage = welcomeMessage.replace("%EXTRAMSG%", gameswelcome.welcome[Math.floor(Math.random() * gameswelcome.welcome.length)])
 						
 						if (message.author.displayAvatarURL.startsWith('https://cdn.discordapp.com/avatars/')) {
 							conlog(message.author.tag + " Has joined the server");
 							member.addRole(`${config.welcome.defaultRoleId}`).catch(console.error);
 
+							if (welcomeMessage.indexOf("%WELCOMENUM%") != -1) welcomeMessage = welcomeMessage.replace("%WELCOMENUM%", storage[1].welcomeNum + 1)
+							
 							if (welcomeOption == 0) {
 								const welChannel = message.guild.channels.find('id', config.welcome.welcomeRoomId);
 								storage[1].welcomeNum++;
 								fs.writeFile("./jsonStorage/storage.json", JSON.stringify(storage), (err) => { if (err) console.error(err) });
-
-								var extraMessage = gameswelcome.welcome[Math.floor(Math.random() * gameswelcome.welcome.length)];
-								welChannel.send(`<:ShadeBotWelcome:326815681540784139> **Welcome to the server <@${message.author.id}>** <:ShadeBotWelcome:326815681540784139>\n${extraMessage} | *${storage[1].welcomeNum} user(s) have been welcomed today.*`)
+								
+								welChannel.send(welcomeMessage)
 									.then(function (message) { message.react("🎉") })
 									.catch(function () { console.log(chalk.redBright("Failed to Add Emojis to Welcoming message")) });
 							} else if (welcomeOption == 1)
-								message.author.send(`<:ShadeBotWelcome:326815681540784139> **Welcome to the server <@${message.author.id}>** <:ShadeBotWelcome:326815681540784139>`)
+								message.author.send(welcomeMessage)
 							
 							if (config.log.welcomed) {
 								let welcomeEmbed = new Discord.RichEmbed()
@@ -796,21 +802,33 @@ client.on("message", message => {
 									.setFooter(`User Welcomed | ${storage[1].welcomeNum} user(s) welcomed today`, message.author.displayAvatarURL)
 									.setTimestamp(new Date())
 								messageLog(message, {embed: welcomeEmbed})
+							}
+						}  else if (message.author.displayAvatarURL.startsWith('https://discordapp.com/assets/')) { // Checks if it's a Default Discord picutre
+							conlog(message.author.tag + " | No Avatar"); // Logs
+							message.author.send(`Please read the <#${config.welcome.passwordRoomId}> room again`); // PMs them what to do.
+						
+						} else {
+							conlog(message.author.tag + " | No Avatar / With Avatar"); // Error check?
 						}
-					}  else if (message.author.displayAvatarURL.startsWith('https://discordapp.com/assets/')) { // Checks if it's a Default Discord picutre
-						conlog(message.author.tag + " | No Avatar"); // Logs
-						message.author.send(`Please read the <#${config.welcome.passwordRoomId}> room again`); // PMs them what to do.
-					} else {
-						conlog(message.author.tag + " | No Avatar / With Avatar"); // Error check?
-					}
 				});
 			} else {
+				if (message.author == client.user) return;
+				
 				message.author.send(`Please Read the <#${config.welcome.passwordRoomId}> room again`);
+				if (config.log.welcomedOther) {
+					let welOtherEmbed = new Discord.RichEmbed()
+						.setDescription(`:face_palm: **${message.author.tag} typed a random message in <#${config.welcome.passwordRoomId}>**\nMessage: ${message.content}`)
+						.setColor("#FAFAFA")
+						.setFooter(`Failed Welcome`, message.author.displayAvatarURL)
+						.setTimestamp(new Date())
+					messageLog(message, {embed: welOtherEmbed})
+				}
 				if (!message.attachments.first()) {
 					return conlog(`${message.author.tag} sent a random message in user rank room` + chalk.white(`\nMessage: ${message.content}`))
 				} else {
 					return conlog(`${message.author.tag} sent a random message in user rank room` + chalk.white(`\nMessage: ${message.content} \nAttachment: ${message.attachments.first().url}`))
 				}
+				
 			}
 		}
 		// Role Room
@@ -899,8 +917,7 @@ client.on("messageUpdate", (oldMessage, newMessage) => {
         if (!logChannel) return;
 	logChannel.send(`<@${newMessage.author.id}> posted a Discord link in <#${newMessage.channel.id}>\nMessage: ${newMessage.content}`);
     }
-
-        // Link checker
+       // Link checker
     else if (chillLink.test(newMessage.content) && channels.linksAllowed.indexOf(newMessage.channel.id) == -1) {
 		if (oldMessage.content == newMessage.content) return; // Hopefully a fix for random edit problem!
         conlog(`${newMessage.author.tag} sent a link in #${newMessage.channel.name} (EDIT)`) // Logs
@@ -1078,9 +1095,9 @@ client.on("guildBanRemove", (guild, user) => {
 });
 
 // Join-Leave
-/*
+
 client.on("guildMemberadd", member => {
-	if (config.log.join-leave) {
+	if (config.log.joinleave) {
 		const logChannel = member.guild.channel.find('id', config.log.channelId)
 		if (!logChannel) return console.log(chalk.redBright("Log Channel doesn't exist!!"));
 		let joinEmbed = new Discord.RichEmbed()
@@ -1092,8 +1109,8 @@ client.on("guildMemberadd", member => {
 	}
 });
 
-client.on("guildMemberRemove" member => {
-	if (config.log.join-leave) {
+client.on("guildMemberRemove", member => {
+	if (config.log.joinleave) {
 		const logChannel = member.guild.channel.find('id', config.log.channelId)
 		if (!logChannel) return console.log(chalk.redBright("Log Channel doesn't exist!!"));
 		let joinEmbed = new Discord.RichEmbed()
@@ -1103,7 +1120,7 @@ client.on("guildMemberRemove" member => {
 			.setTimestamp(new Date())
 		logChannel.send({embed: joinEmbed})
 	}
-});*/
+});
 
 // Errors
 process.on('unhandledRejection', (err) => conlog(chalk.yellow('Promise was rejected but there was no error handler: ' + chalk.white(err))))

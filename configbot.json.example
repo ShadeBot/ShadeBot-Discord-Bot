@@ -17,6 +17,7 @@
 	},
 	"welcome":{
 		"password":"hi",
+		"message":"<:ShadeBotWelcome:326815681540784139> **Welcome to the server %MENTION%** <:ShadeBotWelcome:326815681540784139>\n%EXTRAMSG% | *%WELCOMENUM% user(s) have been welcomed today.*",
 		"passwordRoomId":"160191714026455040",
 		"defaultRoleId":"257007364492886016",
 		"welcomeRoomId":"153951788163137536"
@@ -34,8 +35,9 @@
 		"addRoles":["333337469762404362"]
 	},
 	"log":{
-		"join-leave":false,
+		"joinleave":false,
 		"welcomed":true,
+		"welcomedOther":true,
 		"points":true,
 		"mute":true,
 		"invites":true,

@@ -22,7 +22,7 @@ echo :: Bot created by Alipoodle (https://github.com/Alipoodle) [ 28 / 09 / 2017
 echo :: -*Read LICENSE to know more about permissions*- >> run.bat
 echo title Discord ShadeBot >> run.bat
 echo :START >> run.bat
-echo node serverbot.js >> run.bat
+echo node app.js >> run.bat
 echo goto START >> run.bat
 echo "run.bat" File Created.
 echo ------------------------------------

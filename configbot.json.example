@@ -1,28 +1,29 @@
 {
-    "token":"MzThiS1snt443alTokenfoemoegno2241",
-	"prefix":"#",
-	"ownerId":["183931930935427073","108291699171659776"],
-	"staffRoles":["153965665018052608","153965730423898112","256262300472836096"],
-	"roles":{
+  "botToken": "MzThiS1snt443alTokenfoemoegno2241",
+  "prefix": "#",
+  "ownerId":["183931930935427073","108291699171659776"],
+  "staffRoles":["153965665018052608","153965730423898112","256262300472836096", "195197183807586305"],
+  "roles":{
 		"room":"309015593409970177",
 		"mute":"258258209712635915"
-	},
-	"features":{
+  },
+  "features":{
 		"welcome":true,
 		"osu":true,
 		"mentionSpammer":true,
 		"mute":true,
+		"roleroom":true,
 		"points":true,
 		"economy":true
-	},
-	"welcome":{
+  },
+  "welcome":{
 		"password":"hi",
 		"message":"<:ShadeBotWelcome:326815681540784139> **Welcome to the server %MENTION%** <:ShadeBotWelcome:326815681540784139>\n%EXTRAMSG% | *%WELCOMENUM% user(s) have been welcomed today.*",
 		"passwordRoomId":"160191714026455040",
 		"defaultRoleId":"257007364492886016",
 		"welcomeRoomId":"153951788163137536"
-	},
-	"osu":{
+  },
+  "osu":{
 		"key":"osu key https://osu.ppy.sh/p/api",
 		"channels":["208311597284720640", "154210492381003776"]
 	},
@@ -49,6 +50,10 @@
 	"image":{
 		"role": "273599854624636929",
 		"embedColor": "#FFEB3B"
+	},
+	"nsfw":{
+		"channels":["154022806563061761],
+		"extremeChannels":["273159168104595456"]
 	},
 	"messageTimeout":15000
 }

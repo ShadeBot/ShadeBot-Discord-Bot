@@ -1,67 +1,8 @@
 [ 
 	{
 		"trigger": "ily shadebot",
-		"users": [],
+		"users": ["183931930935427073", "183931930935427073"],
 		"true": "💬 Love you toooo! <:AliMercyHeart2:326076862503845890> <:AliMercyHeart:306055342490517506>",
 		"false": "💬 Sorry I'm taken 😘"
 	},
-	
-	{
-		"trigger": "shadebetch",
-		"users": [""],
-		"false": "💬 Bitch... That ain't my name and you know it."
-    },
-    
-    {
-		"trigger": "shadebot-sama",
-		"users": ["193371641848266752"],
-		"true": "💬 Y-yes Lenny-chan? >w< *nuzzles nosey*",
-		"false": "💬 I'm not gay sorry"
-    },
-
-    {
-		"trigger": "goodbot",
-		"users": ["241593793579712512"],
-		"true": "💬 Yes Rufy-kun! *hhhhhh* I'll be a good girl... *groans as i stare at his buldge*",
-		"false": "💬 I'm only Rufy's *hisses and runs to Rufy's heels* Away with you!"
-    },
-
-    {
-		"trigger": "shadebutt",
-		"users": ["108291699171659776"],
-		"true": "💬 Put it in Riz-sensei <:ShadeBottriGasm:326816756494761996>",
-		"false": "💬 I'm sorry, but that's only for Rizako 😉"
-    },
-
-    {
-		"trigger": "damn",
-		"users": ["111911375269330944"],
-		"true": "💬 daniel"
-    },
-
-    {
-		"trigger": "cross on your forehead",
-		"users": [""],
-		"false": "💬 issa knife <:henIssa:313794938875936769>"
-    },
-
-    {
-		"trigger": "send nudes",
-		"users": [""],
-		"false": "💬 Give them to me too thanks 😘"
-    },
-
-    {
-		"trigger": "harder daddy",
-		"users": [""],
-		"false": "💬 Please... give it to me as well! <:AliMercyGasm:274887600932913162>"
-    },
-
-    {
-		"trigger": "ali doesn't have",
-		"users": [""],
-		"false": "💬 **News Flash**\n**Alipoodle** does not have the Witch skin for the character called Mercy in the game Overwatch. <:AliMercyWitch:306055344180690945>\nPress 'F' to pay respects."
-    }
-    
-
 ]

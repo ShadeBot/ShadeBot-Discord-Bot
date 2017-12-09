@@ -16,7 +16,7 @@ echo "echo Starting the Auto restart Bot program for Linux / Mac
 echo If you require any help with it not working, please check some of the comments in this file!
 while :
 do
- 	node serverbot.js
+ 	node app.js
  	echo Bot shutdown, restarting now
 done
 

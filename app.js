@@ -4,7 +4,7 @@ const client = new Discord.Client({
     'VOICE_STATE_UPDATE', 'TYPING_START', 'VOICE_SERVER_UPDATE', 'RELATIONSHIP_ADD', 'RELATIONSHIP_REMOVE']
 });
 
-const config = require('./config.json');
+const config = require('./configbot.json');
 const fs = require("fs");
 const Enmap = require("enmap");
 const EnmapLevel = require("enmap-level");

@@ -51,9 +51,5 @@
 		"role": "273599854624636929",
 		"embedColor": "#FFEB3B"
 	},
-	"nsfw":{
-		"channels":["154022806563061761],
-		"extremeChannels":["273159168104595456"]
-	},
 	"messageTimeout":15000
 }

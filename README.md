@@ -1,70 +1,25 @@
-# ShadeBot <img src="https://alipoodle.moe/i/96NdQ.png" align="right" height="250" width="250" />
+# ShadeBot <img src="https://alipoodle.moe/i/shadebot.png" align="right" height="250" width="250" />
 
-ShadeBot is a discord bot primarily made for the Hentai! server Discord! Its function is to welcome people using a special welcome room. When users join the server, they can only see #announcements #rules and #go-here-for-user-rank and they need to have a profile picture & type a specific password. In our case it's simply **Hi**. They will then be welcomed in the primary chat room.
+ShadeBot is a password locking system discord bot! Its function is to welcome people using a special welcome room.
+When users join the server, they can only see a few important channels like rules, and a specific channel to get a role and join the full server
+and they need to type a specific password (Soon require a Profile Picture).
 
-# Installation
-
-### - Install Required Programs -
-
-Before you can download and setup the bot, there are 2 programs you need to have installed on your computer to make sure everything runs on first go:
-
-- [**Git**](https://git-scm.com/downloads)
-- [**Node JS**](https://nodejs.org/en/download/current/)
-
-### - Download Project Files -
-
-After you have the required programs installed, you can go ahead and download the project files. To do that, you either download the ZIP folder or do `git clone https://github.com/ShadeBot/ShadeBot-Discord-Bot.git` if you are a console person. Once you finish downloading it you will be ready to setup the config files.
-
-### - Setup Config Files -
-
-Once you download the project files you will see the `configbot.json` you'll need to fill it with how you would like ShadeBot to work.
-As well as the config file, there's the jsonStorage which will contain a few files which can be edited of it's content. However, all of them can be edited from within Discord.
-
-#### < Windows >
-
-Open the `installer.bat` file. This will install the required node modules (so you don’t have to do it yourself) and create a `run.bat` file. You can use this file to start the bot. If you did everything correctly, the bot should start up fine.
-
-If for some reason you have ran `installer.bat`, it disapeared and it didnt create `run.bat`, then re-download `installer.bat` and try again. Most likely either git or node were not installed correctly. Check if they work and try again.
+Features include:
+- Password Protection channel
+- Customisable Welcome message
+	- Both DM and in a channel
+- Logging of information
+- Mute role
+- Logging of information *(Disabled currently)*
+- and a Few other fun commands!
 
 
-#### < Linux / Mac >
+**Currently ShadeBot is currently running on the Support server [Alipoodle >.<](https://discord.gg/q7qXQGJ)** if you would like to experience the bot.
 
-Executable files are kind of weird in linux, and users most likely use console to do their work. So, to setup this bot on linux or mac open a terminal in the directory you downloaded the files to and and either type `./installer.sh` or if the script doesn't work manually type `npm i`.
+---------------
 
-Once it is finished you can start the bot by using the `run.sh` script that will keep restarting the bo if it crashes (if the installer worked correctly) otherwise try `npm start` or `node self.js`. If you did everything correctly, the bot should start up fine.
 
-### - Feautres -
+Get Started with the bot by typing in `#settings edit` and will prompted with an easy to access Settings.
 
-#### Daily
-Shadebot has a small Gambling system in it. Each day a user can come in and do ``#daily`` and can get **100 Shadebucks** which can be used towards roulette and a luckydip game which can let them gain more Shadebucks!
-
-![Example of #daily](https://alipoodle.moe/i/DRSuJ.png)
-
-#### Events team points
-The bot handles our events team points, allowing users to cash out for items such as Steam Credit, or Custom Roles / Commands.
-
-![Event team stuff](https://alipoodle.moe/i/LhIC2.png)
-
-#### Self assign Roles
-As on many servers you have a few roles which users can "self-assign". With Shadebot, there's a specific room which users can ask for a role and be provided with them.
-
-![Roles](https://alipoodle.moe/i/EzlLX.png)
-
-#### Ban SA roles
-"But I only want specific people, who have X role to gain this role", ShadeBot can do that!
-
-![Roles2](https://alipoodle.moe/i/r8V2H.png)
-
-#### Muting system
-ShadeBot has a muting system that will add a specific role to a user to mute them and then will remove it at specific time. (Work in progress)
-
-![Mute](https://alipoodle.moe/i/PoFad.png)
-
-#### Removal of Discord Links
-Don't want stupid Discord links
-
-![Discord Links](https://alipoodle.moe/i/AjDof.png)
-
-There's a many other things that ShadeBot can do!
-
-**Currently ShadeBot is made more for the [Hentai server](https://discord.gg/0rJcIjZ54vYONbfJ). However has a config file to be able to change how it works!**
+For ease of user you can use the [ShadeBot server template](https://discord.new/E6ggEH2BKW6D) which includes all the basic permissions and channels needed.<br>
+*(Soon) there will be an auto feature to configure for the server template. Create server, Invite bot, run auto configure and be on your way.*

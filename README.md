@@ -1,5 +1,7 @@
 # ShadeBot <img src="https://alipoodle.moe/i/shadebot.png" align="right" height="250" width="250" />
 
+Invite Bot: [here](https://discordapp.com/oauth2/authorize?client_id=314099620957388801&scope=bot&permissions=268461248)
+
 ShadeBot is a password locking system discord bot! Its function is to welcome people using a special welcome room.
 When users join the server, they can only see a few important channels like rules, and a specific channel to get a role and join the full server
 and they need to type a specific password (Soon require a Profile Picture).

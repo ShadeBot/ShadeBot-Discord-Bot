@@ -1,4 +1,4 @@
-# CODE ABOVE IS NOT THE SAME CODEBASE AS CURRENT VERSION OF SHADEBOT
+## CODE ABOVE IS NOT THE SAME CODEBASE AS CURRENT LIVE VERSION OF SHADEBOT
 
 # ShadeBot <img src="https://alipoodle.moe/i/shadebot.png" align="right" height="250" width="250" />
 

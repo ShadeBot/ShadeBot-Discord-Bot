@@ -1,3 +1,5 @@
+# CODE ABOVE IS NOT THE SAME CODEBASE AS CURRENT VERSION OF SHADEBOT
+
 # ShadeBot <img src="https://alipoodle.moe/i/shadebot.png" align="right" height="250" width="250" />
 
 Invite Bot: [here](https://discordapp.com/oauth2/authorize?client_id=314099620957388801&scope=bot&permissions=268461248)

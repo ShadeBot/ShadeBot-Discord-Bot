@@ -16,7 +16,7 @@ Features include:
 - and a Few other fun commands!
 
 
-**Currently ShadeBot is currently running on the Support server [Alipoodle >.<](https://discord.gg/q7qXQGJ)** if you would like to experience the bot.
+**ShadeBot is currently running on the Support server [Alipoodle >.<](https://discord.gg/q7qXQGJ)** if you would like to experience the bot.
 
 ---------------
 

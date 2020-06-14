@@ -1,13 +1,12 @@
-const Discord = require("discord.js");
-const client = new Discord.Client({
+const {Client} = require("discord.js"),
+client = new Client({
     disabledEvents: ['CHANNEL_PINS_UPDATE', 'USER_NOTE_UPDATE', 'USER_SETTINGS_UPDATE',
     'VOICE_STATE_UPDATE', 'TYPING_START', 'VOICE_SERVER_UPDATE', 'RELATIONSHIP_ADD', 'RELATIONSHIP_REMOVE']
-});
-
-const config = require('./configbot.json');
-const fs = require("fs");
-const Enmap = require("enmap");
-const EnmapLevel = require("enmap-level");
+}),
+config = require('./configbot.json'),
+fs = require("fs"),
+Enmap = require("enmap"),
+EnmapLevel = require("enmap-level");
 
 client.welcomeOption = 0;
 client.disableRoleRoom = false;
@@ -28,8 +27,8 @@ client.db = require("./modules/PersistentDB.js");
 client.commands = new Enmap();
 client.aliases = new Enmap();
 client.testing = new Enmap({ provider: new EnmapLevel({ name: 'testing' }) });
-
-fs.readdir('./commands/', (err, files) => {
+init () = async() => {
+    fs.readdir('./commands/', (err, files) => {
   if (err) console.error(err);
   console.log(chalk.yellow(`Loading a total of ${files.length} commands.`));
   files.forEach(f => {
@@ -43,7 +42,7 @@ fs.readdir('./commands/', (err, files) => {
   });
 });
 
-fs.readdir('./events/', (err, files) => {
+    fs.readdir('./events/', (err, files) => {
   if (err) console.error(err);
   console.log(chalk.yellow(`Loading a total of ${files.length} events.`));
   files.forEach(file => {
@@ -53,6 +52,15 @@ fs.readdir('./events/', (err, files) => {
     delete require.cache[require.resolve(`./events/${file}`)];
   });
 });
+    
+client.login(config.botToken);
+    
+console.log(chalk.greenBright(` Start Time: ${new Date().toLocaleTimeString('en-GB', { hour: "numeric", minute: "numeric", second: "numeric"})}`));
+console.log(chalk.green(" ---------------------------------------------"))
+};
+(async () => {
+await init();
+})();
 
 setInterval(function () {
   var currentGame = client.gameswelcome.games[Math.floor(Math.random() * client.gameswelcome.games.length)];
@@ -65,9 +73,3 @@ setInterval(function () {
     client.saveFile("s")
   }
 }.bind(this), 60000);
-
-
-console.log(chalk.greenBright(` Start Time: ${new Date().toLocaleTimeString('en-GB', { hour: "numeric", minute: "numeric", second: "numeric"})}`));
-console.log(chalk.green(" ---------------------------------------------"))
-
-client.login(config.botToken);

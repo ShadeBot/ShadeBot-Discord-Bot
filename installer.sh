@@ -1,6 +1,6 @@
 echo "/ ---------------------------------------------- /"
-echo "          ShadeBot created by Alipoodle"
-echo "                6 / 12 / 2016"
+echo "          Wyvern created by Virak"
+echo "                29 / 9 / 2020"
 echo "              All rights reserved."
 echo "/ ---------------------------------------------- /"
 
@@ -9,7 +9,7 @@ echo --------------------------------------
 npm i
 echo.
 echo Done!
-echo Creating run files for ShadeBot...
+echo Creating run files for Wyvern...
 echo ------------------------------------
 
 echo "echo Starting the Auto restart Bot program for Linux / Mac
